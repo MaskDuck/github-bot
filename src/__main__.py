@@ -56,7 +56,7 @@ def getlink(ctx):
     """Return a link where you can use to config. Bot'll send notifis in this channel."""
     if (ctx.author.permissions & 1 << 4) != 1 << 4:
         return "You don't have `Manage Message` permission in this channel."
-    token = maybe_generate_token(channel_id=ctx.channel.id)
+    token = maybe_generate_token(channel_id=ctx.channel_id)
     return Message(
         content=f"**Don't share this with anyone!** https://{app.config['WEBHOOK_HOSTNAME']}/github/{token}\nIf you shared it to anyone, please re-generate this link with the `/regenerate` command.",
         ephemeral=True,
@@ -68,7 +68,7 @@ def regenerate(ctx: Context):
     """Regenerate the webhook link, if the old link is leaked."""
     if (ctx.author.permissions & 1 << 4) != 1 << 4:
         return "You don't have `Manage Message` permission in this channel."
-    token = regenerate_token(channel_id=ctx.channel.id)
+    token = regenerate_token(channel_id=ctx.channel_id)
     return Message(
         content=f"Your link have been regenerated! Be sure to update the link in the GitHub setting as well!\n**Don't share this with anyone!** https://{app.config['WEBHOOK_HOSTNAME']}/github/{token}\nIf you shared it to anyone, please re-generate this link with the `/regenerate` command.",
         ephemeral=True,
