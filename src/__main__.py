@@ -30,6 +30,8 @@ def send_post(token):
     if request.headers['X-GitHub-Event'] == "branch_protection_rule":
         _send_branch_protection_rules(channel_id=channel_id, raw_content_info=request.get_json())
     
+    return "Done!"
+    
 
     
 
