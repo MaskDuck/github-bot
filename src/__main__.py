@@ -29,14 +29,14 @@ def send_post(token):
     
     if request.headers['X-GitHub-Event'] == "branch_protection_rule":
         _send_branch_protection_rules(channel_id=channel_id, raw_content_info=request.get_json())
-    
+
     return "Done!"
     
 
     
 
 def send_request(**kwargs):
-    r = requests.request(headers={"Authorization": f"Bot {app.config['DISCORD_BOT_TOKEN']}"},**kwargs)
+    r = requests.request(headers={"Authorization": f"Bot {app.config['DISCORD_BOT_TOKEN']}", "Content-Type": "application/json"},**kwargs)
     if r.status_code == 429:
         time.sleep(r.headers['X-Ratelimit-Reset-After'])
         request(**kwargs)
