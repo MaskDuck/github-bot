@@ -79,7 +79,7 @@ def regenerate(ctx: Context):
 bot.set_route("/bot")
 
 
-bot.update_commands()
+#bot.update_commands()
 
 
 if __name__ == "__main__":
