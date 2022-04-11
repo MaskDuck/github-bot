@@ -20,7 +20,7 @@ app.config["WEBHOOK_HOSTNAME"] = os.environ["WEBHOOK_HOSTNAME"]
 mongo = pymongo.MongoClient(app.config["MONGO_URL"])["Auth"]["Token"]
 
 
-@app.route("/github/<token>", methods=['POST'])
+@app.route("/github/<token>")
 def send_post(token):
     try:
         channel_id = mongo.find_one({"token": token})['channel_id']
