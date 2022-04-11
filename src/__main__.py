@@ -39,9 +39,9 @@ def send_request(**kwargs):
     if r.status_code == 429:
         time.sleep(r.headers['X-Ratelimit-Reset-After'])
         request(**kwargs)
-    elif r.status < 400:
+    elif r.status_code < 400:
         return r.json()
-    elif r.status == 404:
+    elif r.status_code == 404:
         pass
 
 def _send_branch_protection_rules(channel_id, raw_content_info):
