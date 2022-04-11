@@ -1,15 +1,15 @@
 import os
 
-from flask import Flask
-from flask_discord_interactions import DiscordInteractions, Message, Context
+from flask import Flask, request, Response
+from flask_discord_interactions import DiscordInteractions, Message, Context, Embed
 import pymongo
 import string
 import random
 import requests
+import time
 
 app = Flask(__name__)
 bot = DiscordInteractions(app)
-
 
 app.config["DISCORD_CLIENT_ID"] = os.environ["DISCORD_CLIENT_ID"]
 app.config["DISCORD_PUBLIC_KEY"] = os.environ["DISCORD_PUBLIC_KEY"]
@@ -20,14 +20,32 @@ app.config["WEBHOOK_HOSTNAME"] = os.environ["WEBHOOK_HOSTNAME"]
 mongo = pymongo.MongoClient(app.config["MONGO_URL"])["Auth"]["Token"]
 
 
-#@app.route("/github/<token>")
+@app.route("/github/<token>")
 def send_post(token):
-    ...
+    try:
+        channel_id = mongo.find_one({"token": token})['channel_id']
+    except:
+        return Response(status=404)
+    if request.headers['X-GitHub-Event'] == "branch_protection_rule":
+        _send_branch_protection_rules(channel_id=channel_id, raw_content_info=request.get_json())
+    
 
-#def send
+    
 
+def send_request(**kwargs):
+    r = requests.request(headers={"Authorization": f"Bot {app.config['DISCORD_BOT_TOKEN']}"},**kwargs)
+    if r.status_code == 429:
+        time.sleep(r.headers['X-Ratelimit-Reset-After'])
+        request(**kwargs)
+    elif r.status < 400:
+        return r.json()
+    elif r.status == 404:
+        pass
 
-
+def _send_branch_protection_rules(channel_id, raw_content_info):
+    action = {"created": f"New branch protection rule `{raw_content_info['rule']['name']}` added", "deleted": f"Branch protection rule `{raw_content_info['rule']['name']}`", "edited": f"Branch protection rule `{raw_content_info['rule']['name']}` edited"}.get(raw_content_info['action'])
+    message = f"__**{raw_content_info['full_name']}**__ {action}"
+    send_request(method="POST", url=f"https://discord.com/api/v10/channels/{channel_id}/messages")
 
 def _plainly_generate_token():
     asciis = string.ascii_letters + string.digits
