@@ -18,11 +18,10 @@ app.config["DISCORD_BOT_TOKEN"] = os.environ["DISCORD_BOT_TOKEN"]
 app.config["MONGO_URL"] = os.environ["MONGO_URL"]
 app.config["WEBHOOK_HOSTNAME"] = os.environ["WEBHOOK_HOSTNAME"]
 mongo = pymongo.MongoClient(app.config["MONGO_URL"])["Auth"]["Token"]
-from werkzeug.routing import Rule
-app.url_map.add(Rule('/', endpoint='github'))
 
 
-@app.route("/github/<token>")
+
+@app.route("/github/<token>", methods=['POST'])
 def send_post(token):
     try:
         channel_id = mongo.find_one({"token": token})['channel_id']
