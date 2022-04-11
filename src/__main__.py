@@ -53,7 +53,7 @@ def send_request(**kwargs):
 def _send_branch_protection_rules(channel_id, raw_content_info):
     action = {
         "created": f"New branch protection rule `{raw_content_info['rule']['name']}` added",
-        "deleted": f"Branch protection rule `{raw_content_info['rule']['name']}`",
+        "deleted": f"Branch protection rule `{raw_content_info['rule']['name']}` deleted",
         "edited": f"Branch protection rule `{raw_content_info['rule']['name']}` edited",
     }.get(raw_content_info["action"])
     message = {
