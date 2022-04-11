@@ -1,5 +1,4 @@
 Flask-Discord-Interactions
 flask
 pymongo
-random
 requests
