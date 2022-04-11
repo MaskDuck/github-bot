@@ -65,7 +65,7 @@ def _send_branch_protection_rules(channel_id, raw_content_info):
     send_request(
         method="POST",
         url=f"https://discord.com/api/v10/channels/{channel_id}/messages",
-        data=message,
+        json=message,
     )
 
 
