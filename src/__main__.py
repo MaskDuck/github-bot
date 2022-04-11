@@ -20,33 +20,47 @@ app.config["WEBHOOK_HOSTNAME"] = os.environ["WEBHOOK_HOSTNAME"]
 mongo = pymongo.MongoClient(app.config["MONGO_URL"])["Auth"]["Token"]
 
 
-
-@app.route("/github/<token>/", methods=['POST'])
+@app.route("/github/<token>/", methods=["POST"])
 def send_post(token):
 
-    channel_id = mongo.find_one({"token": str(token)})['_id']
+    channel_id = mongo.find_one({"token": str(token)})["_id"]
     print(channel_id)
-    
-    if request.headers['X-GitHub-Event'] == "branch_protection_rule":
-        _send_branch_protection_rules(channel_id=channel_id, raw_content_info=request.get_json())
+
+    if request.headers["X-GitHub-Event"] == "branch_protection_rule":
+        _send_branch_protection_rules(
+            channel_id=channel_id, raw_content_info=request.get_json()
+        )
 
     return "Done!"
-    
 
-    
 
 def send_request(**kwargs):
-    r = requests.request(headers={"Authorization": f"Bot {app.config['DISCORD_BOT_TOKEN']}", "Content-Type": "application/json"},**kwargs)
+    r = requests.request(
+        headers={
+            "Authorization": f"Bot {app.config['DISCORD_BOT_TOKEN']}",
+            "Content-Type": "application/json",
+        },
+        **kwargs,
+    )
     if r.status_code == 429:
-        time.sleep(r.headers['X-Ratelimit-Reset-After'])
+        time.sleep(r.headers["X-Ratelimit-Reset-After"])
         request(**kwargs)
     elif r.status_code < 400:
         return r.json()
     print(r.json())
+
+
 def _send_branch_protection_rules(channel_id, raw_content_info):
-    action = {"created": f"New branch protection rule `{raw_content_info['rule']['name']}` added", "deleted": f"Branch protection rule `{raw_content_info['rule']['name']}`", "edited": f"Branch protection rule `{raw_content_info['rule']['name']}` edited"}.get(raw_content_info['action'])
-    message = f"__**{raw_content_info['repository']['full_name']}**__ {action}"
-    send_request(method="POST", url=f"https://discord.com/api/v10/channels/{channel_id}/messages")
+    action = {
+        "created": f"New branch protection rule `{raw_content_info['rule']['name']}` added",
+        "deleted": f"Branch protection rule `{raw_content_info['rule']['name']}`",
+        "edited": f"Branch protection rule `{raw_content_info['rule']['name']}` edited",
+    }.get(raw_content_info["action"])
+    message = Message(content=f"__**{raw_content_info['repository']['full_name']}**__ {action}").dump()
+    send_request(
+        method="POST", url=f"https://discord.com/api/v10/channels/{channel_id}/messages"
+    )
+
 
 def _plainly_generate_token():
     asciis = string.ascii_letters + string.digits
@@ -98,12 +112,11 @@ def regenerate(ctx: Context):
     )
 
 
-
 bot.set_route("/bot")
 
 
-#bot.update_commands()
+# bot.update_commands()
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8080)
+    app.run(host="0.0.0.0", port=8080)
