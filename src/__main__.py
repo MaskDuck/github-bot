@@ -46,7 +46,7 @@ def send_request(**kwargs):
 
 def _send_branch_protection_rules(channel_id, raw_content_info):
     action = {"created": f"New branch protection rule `{raw_content_info['rule']['name']}` added", "deleted": f"Branch protection rule `{raw_content_info['rule']['name']}`", "edited": f"Branch protection rule `{raw_content_info['rule']['name']}` edited"}.get(raw_content_info['action'])
-    message = f"__**{raw_content_info['full_name']}**__ {action}"
+    message = f"__**{raw_content_info['repository']['full_name']}**__ {action}"
     send_request(method="POST", url=f"https://discord.com/api/v10/channels/{channel_id}/messages")
 
 def _plainly_generate_token():
