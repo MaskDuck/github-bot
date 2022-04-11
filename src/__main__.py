@@ -59,7 +59,7 @@ def _send_branch_protection_rules(channel_id, raw_content_info):
     message = {
         "content": f"__**{raw_content_info['repository']['full_name']}**__ {action}",
         "tts": False,
-        "allowed_mentions": {"parse": []},
+        "allowed_mentions": {"parse": []}
 
     }
     send_request(
