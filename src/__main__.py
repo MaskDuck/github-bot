@@ -65,6 +65,10 @@ def maybe_generate_token(channel_id):
 
 def regenerate_token(channel_id):
     token = _plainly_generate_token()
+    if mongo.find_one({"_id": channel_id}) is None:
+
+        mongo.insert_one({"_id": channel_id, "token": token})
+
     mongo.update_one({"_id": channel_id}, {"$set": {"token": token}})
     return token
 
