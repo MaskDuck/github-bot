@@ -53,7 +53,7 @@ def regenerate_token(channel_id):
 
 @bot.command()
 def getlink(ctx):
-    """Return a link where you can use to config. Must be executed in the channel the bot should send notification in."""
+    """Return a link where you can use to config. Bot'll send notifis in this channel."""
     if (ctx.author.permissions & 1 << 4) != 1 << 4:
         return "You don't have `Manage Message` permission in this channel."
     token = maybe_generate_token(channel_id=ctx.channel.id)
