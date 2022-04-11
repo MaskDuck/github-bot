@@ -24,7 +24,7 @@ mongo = pymongo.MongoClient(app.config["MONGO_URL"])["Auth"]["Token"]
 @app.route("/github/<token>/", methods=['POST'])
 def send_post(token):
 
-    channel_id = mongo.find_one({"token": str(token)}).get(['_id'])
+    channel_id = mongo.find_one({"token": str(token)})['_id']
     print(channel_id)
     
     if request.headers['X-GitHub-Event'] == "branch_protection_rule":
