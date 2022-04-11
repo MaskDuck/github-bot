@@ -41,9 +41,7 @@ def send_request(**kwargs):
         request(**kwargs)
     elif r.status_code < 400:
         return r.json()
-    elif r.status_code == 404:
-        pass
-
+    print(r.json())
 def _send_branch_protection_rules(channel_id, raw_content_info):
     action = {"created": f"New branch protection rule `{raw_content_info['rule']['name']}` added", "deleted": f"Branch protection rule `{raw_content_info['rule']['name']}`", "edited": f"Branch protection rule `{raw_content_info['rule']['name']}` edited"}.get(raw_content_info['action'])
     message = f"__**{raw_content_info['repository']['full_name']}**__ {action}"
